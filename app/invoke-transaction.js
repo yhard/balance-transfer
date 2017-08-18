@@ -27,7 +27,8 @@ var ORGS = hfc.getConfigSetting('network-config');
 var invokeChaincode = function(peerNames, channelName, chaincodeName, fcn, args, username, org) {
 	logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
 	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
 	var targets = (peerNames) ? helper.newPeers(peerNames, org) : undefined;
 	var tx_id = null;
 

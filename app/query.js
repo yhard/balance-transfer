@@ -24,7 +24,8 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
 
 var queryChaincode = function(peer, channelName, chaincodeName, args, fcn, username, org) {
-	var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
+	//var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
 	var target = buildTarget(peer, org);
 	return helper.getRegisteredUsers(username, org).then((user) => {
@@ -64,9 +65,10 @@ var queryChaincode = function(peer, channelName, chaincodeName, args, fcn, usern
 			err;
 	});
 };
-var getBlockByNumber = function(peer, blockNumber, username, org) {
+var getBlockByNumber = function(channelName,peer, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
+	var channel = helper.createChannelForOrg(channelName,org);
 
 	return helper.getRegisteredUsers(username, org).then((member) => {
 		return channel.queryBlock(parseInt(blockNumber), target);
@@ -92,10 +94,10 @@ var getBlockByNumber = function(peer, blockNumber, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
-var getTransactionByID = function(peer, trxnID, username, org) {
+var getTransactionByID = function(channelName,peer, trxnID, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
-
+	//var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
 	return helper.getRegisteredUsers(username, org).then((member) => {
 		return channel.queryTransaction(trxnID, target);
 	}, (err) => {
@@ -119,10 +121,10 @@ var getTransactionByID = function(peer, trxnID, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
-var getBlockByHash = function(peer, hash, username, org) {
+var getBlockByHash = function(channelName,peer, hash, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
-
+//var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
 	return helper.getRegisteredUsers(username, org).then((member) => {
 		return channel.queryBlockByHash(Buffer.from(hash), target);
 	}, (err) => {
@@ -146,10 +148,10 @@ var getBlockByHash = function(peer, hash, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
-var getChainInfo = function(peer, username, org) {
+var getChainInfo = function(channelName,peer, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
-
+	//var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
 	return helper.getRegisteredUsers(username, org).then((member) => {
 		return channel.queryInfo(target);
 	}, (err) => {
@@ -178,10 +180,11 @@ var getChainInfo = function(peer, username, org) {
 	});
 };
 //getInstalledChaincodes
-var getInstalledChaincodes = function(peer, type, username, org) {
+var getInstalledChaincodes = function(channelName,peer, type, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org);
 
 	return helper.getOrgAdmin(org).then((member) => {
 		if (type === 'installed') {
@@ -225,9 +228,9 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 };
 var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
-
+    var channel = helper.createChannelForOrg(channelName,org);
 	return helper.getRegisteredUsers(username, org).then((member) => {
 		//channel.setPrimaryPeer(targets[0]);
 		return client.queryChannels(target);

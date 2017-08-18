@@ -30,7 +30,10 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
 	logger.debug('\n============ Instantiate chaincode on organization ' + org +
 		' ============\n');
 
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
+
+    var channel = helper.createChannelForOrg(channelName,org);
+
 	var client = helper.getClientForOrg(org);
 
 	return helper.getOrgAdmin(org).then((user) => {

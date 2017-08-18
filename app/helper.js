@@ -33,6 +33,8 @@ var clients = {};
 var channels = {};
 var caClients = {};
 
+var channelName = null;
+
 // set up the client and channel objects for each org
 for (let key in ORGS) {
 	if (key.indexOf('org') === 0) {
@@ -42,7 +44,7 @@ for (let key in ORGS) {
 		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
 		client.setCryptoSuite(cryptoSuite);
 
-		let channel = client.newChannel(hfc.getConfigSetting('channelName'));
+		let channel = client.newChannel(channelName);
 		channel.addOrderer(newOrderer(client));
 
 		clients[key] = client;
@@ -137,6 +139,12 @@ function newRemotes(names, forPeers, userOrg) {
 //-------------------------------------//
 var getChannelForOrg = function(org) {
 	return channels[org];
+};
+
+
+var createChannelForOrg = function(channelName,org) {
+    channelName = channelName;
+    return channels[org];
 };
 
 var getClientForOrg = function(org) {
@@ -307,6 +315,7 @@ var getLogger = function(moduleName) {
 	return logger;
 };
 
+exports.createChannelForOrg = createChannelForOrg;
 exports.getChannelForOrg = getChannelForOrg;
 exports.getClientForOrg = getClientForOrg;
 exports.getLogger = getLogger;

@@ -22,12 +22,13 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('install-chaincode');
 var tx_id = null;
 //function installChaincode(org) {
-var installChaincode = function(peers, chaincodeName, chaincodePath,
+var installChaincode = function(channelName,peers, chaincodeName, chaincodePath,
 	chaincodeVersion, username, org) {
 	logger.debug(
 		'\n============ Install chaincode on organizations ============\n');
 	helper.setupChaincodeDeploy();
-	var channel = helper.getChannelForOrg(org);
+	//var channel = helper.getChannelForOrg(org);
+    var channel = helper.createChannelForOrg(channelName,org)
 	var client = helper.getClientForOrg(org);
 
 	return helper.getOrgAdmin(org).then((user) => {
