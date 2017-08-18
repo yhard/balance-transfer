@@ -1,3 +1,7 @@
+/**
+ * Created by zhaoliang on 2017/8/17.
+ */
+
 'use strict';
 var log4js = require('log4js');
 var logger = log4js.getLogger('SampleWebApp');
