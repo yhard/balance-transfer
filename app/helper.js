@@ -142,9 +142,25 @@ var getChannelForOrg = function(org) {
 };
 
 
-var createChannelForOrg = function(channelName,org) {
-    channelName = channelName;
-    return channels[org];
+var createChannelForOrg = function(channelName, org) {
+    let client = new hfc();
+
+    let cryptoSuite = hfc.newCryptoSuite();
+    cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[org].name)}));
+    client.setCryptoSuite(cryptoSuite);
+
+    let channel = client.newChannel(channelName);
+    channel.addOrderer(newOrderer(client));
+
+    clients[org] = client;
+    channels[org] = channel;
+
+    setupPeers(channel, org, client);
+
+    let caUrl = ORGS[org].ca;
+    caClients[org] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+
+    return channel;
 };
 
 var getClientForOrg = function(org) {

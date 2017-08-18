@@ -14,7 +14,7 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 	var client = helper.getClientForOrg(orgName);
 	//var channel = helper.getChannelForOrg(orgName);
 
-    var channel = helper.createChannelForOrg(channelName,orgName);
+    var channel = helper.createChannelForOrg(channelName, orgName);
 
 	// read in the envelope for the channel config raw bytes
 	var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
