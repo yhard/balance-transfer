@@ -31,6 +31,9 @@ var logger = helper.getLogger('Create-Channel');
 var createChannel = function(channelName, channelConfigPath, username, orgName) {
 	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
 
+    function getKeyStoreForOrg(org) {
+        return hfc.getConfigSetting('keyValueStore') + '_' + org;
+    }
 
     // 设置客户端和每个组织通道对象
     for (let key in ORGS) {
