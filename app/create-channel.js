@@ -2,6 +2,24 @@
  * Created by zhaoliang on 2017/8/18.
  */
 
+
+var log4js = require('log4js');
+var User = require('fabric-client/lib/User.js');
+var crypto = require('crypto');
+var copService = require('fabric-ca-client');
+
+var hfc = require('fabric-client');
+
+var ORGS = hfc.getConfigSetting('network-config');
+
+var clients = {};
+var channels = {};
+var caClients = {};
+
+var channelName = null;
+
+
+
 var util = require('util');
 var fs = require('fs');
 var path = require('path');
@@ -13,10 +31,37 @@ var logger = helper.getLogger('Create-Channel');
 var createChannel = function(channelName, channelConfigPath, username, orgName) {
 	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
 
-	var client = helper.getClientForOrg(orgName);
+
+    // 设置客户端和每个组织通道对象
+    for (let key in ORGS) {
+        if (key.indexOf('org') === 0) {
+            let client = new hfc();
+
+            let cryptoSuite = hfc.newCryptoSuite();
+            cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
+            client.setCryptoSuite(cryptoSuite);
+
+            let channel = client.newChannel(channelName);
+            channel.addOrderer(newOrderer(client));
+
+            clients[key] = client;
+            channels[key] = channel;
+
+            setupPeers(channel, key, client);
+
+            let caUrl = ORGS[key].ca;
+            caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+        }
+    }
+
+    var getClientForOrg = function(org) {
+        return clients[org];
+    };
+
+	var client = clients[orgName];
 	//var channel = helper.getChannelForOrg(orgName);
 
-    var channel = helper.createChannelForOrg(channelName, orgName);
+    var channel = channel[orgName];
 
 	// read in the envelope for the channel config raw bytes
 	var envelope = fs.readFileSync(path.join(__dirname, channelConfigPath));
@@ -68,3 +113,4 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 };
 
 exports.createChannel = createChannel;
+
