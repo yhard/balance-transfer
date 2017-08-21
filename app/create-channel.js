@@ -39,6 +39,8 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 		};
 
 		// send to orderer
+		logger.info("--------------------------");
+		logger.debug(request);
 		return client.createChannel(request);
 	}, (err) => {
 		logger.error('Failed to enroll user \''+username+'\'. Error: ' + err);
