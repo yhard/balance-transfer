@@ -35,6 +35,32 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
         return hfc.getConfigSetting('keyValueStore') + '_' + org;
     }
 
+    function setupPeers(channel, org, client) {
+        for (let key in ORGS[org].peers) {
+            let data = fs.readFileSync(path.join(__dirname, ORGS[org].peers[key]['tls_cacerts']));
+            let peer = client.newPeer(
+                ORGS[org].peers[key].requests,
+                {
+                    pem: Buffer.from(data).toString(),
+                    'ssl-target-name-override': ORGS[org].peers[key]['server-hostname']
+                }
+            );
+            peer.setName(key);
+
+            channel.addPeer(peer);
+        }
+    }
+
+    function newOrderer(client) {
+        var caRootsPath = ORGS.orderer.tls_cacerts;
+        let data = fs.readFileSync(path.join(__dirname, caRootsPath));
+        let caroots = Buffer.from(data).toString();
+        return client.newOrderer(ORGS.orderer.url, {
+            'pem': caroots,
+            'ssl-target-name-override': ORGS.orderer['server-hostname']
+        });
+    }
+
     // 设置客户端和每个组织通道对象
     for (let key in ORGS) {
         if (key.indexOf('org') === 0) {
