@@ -24,15 +24,14 @@ var nonce = null;
 var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Join-Channel');
-//helper.hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
 var ORGS = helper.ORGS;
 var allEventhubs = [];
 
 //
-//Attempt to send a request to the orderer with the sendCreateChain method
+//加入通道
 //
 var joinChannel = function(channelName, peers, username, org) {
-	// on process exit, always disconnect the event hub
+
 	var closeConnections = function(isSuccess) {
 		if (isSuccess) {
 			logger.debug('\n============ Join Channel is SUCCESS ============\n');
@@ -40,31 +39,35 @@ var joinChannel = function(channelName, peers, username, org) {
 			logger.debug('\n!!!!!!!! ERROR: Join Channel FAILED !!!!!!!!\n');
 		}
 		logger.debug('');
+
 		for (var key in allEventhubs) {
 			var eventhub = allEventhubs[key];
 			if (eventhub && eventhub.isconnected()) {
-				//logger.debug('Disconnecting the event hub');
 				eventhub.disconnect();
 			}
 		}
 	};
-	//logger.debug('\n============ Join Channel ============\n')
-	logger.info(util.format(
-		'Calling peers in organization "%s" to join the channel', org));
+	logger.debug('\n============ Join Channel ============\n')
+	logger.info(util.format('Calling peers in organization "%s" to join the channel', org));
 
 	var client = helper.getClientForOrg(org);
+
 	//var channel = helper.getChannelForOrg(org);
-	var channel = helper.createChannelForOrg(channelName,org)
+
+	var channel = helper.createChannelForOrg(channelName,org);
+
 	var eventhubs = [];
 
 	return helper.getOrgAdmin(org).then((admin) => {
 		logger.info(util.format('received member object for admin of the organization "%s": ', org));
+
 		tx_id = client.newTransactionID();
 		let request = {
 			txId : 	tx_id
 		};
 
 		return channel.getGenesisBlock(request);
+
 	}).then((genesis_block) => {
 		tx_id = client.newTransactionID();
 		var request = {

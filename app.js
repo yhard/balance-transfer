@@ -151,13 +151,16 @@ app.post('/channels', function(req, res) {
 		res.send(message);
 	});
 });
-// Join Channel
+// 加入通道
 app.post('/channels/:channelName/peers', function(req, res) {
-	logger.info('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
+	logger.info('<<<<<<<<<<<<<<<<< 加入通道 >>>>>>>>>>>>>>>>>');
+
 	var channelName = req.params.channelName;
 	var peers = req.body.peers;
-	logger.debug('channelName : ' + channelName);
-	logger.debug('peers : ' + peers);
+
+	logger.debug('通道 : ' + channelName);
+	logger.debug('节点 : ' + peers);
+
 	if (!channelName) {
 		res.json(getErrorMessage('\'channelName\''));
 		return;
