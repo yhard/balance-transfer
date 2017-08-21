@@ -126,17 +126,17 @@ app.post('/users', function(req, res) {
 		}
 	});
 });
-// Create Channel
+// 创建通道
 app.post('/channels', function(req, res) {
-	logger.info('<<<<<<<<<<<<<<<<< C R E A T E  C H A N N E L >>>>>>>>>>>>>>>>>');
-	logger.debug('End point : /channels');
+	logger.info('<<<<<<<<<<<<<<<<< 创建通道 >>>>>>>>>>>>>>>>>');
+
 	var channelName = req.body.channelName;
 	var channelConfigPath = req.body.channelConfigPath;
-	logger.debug('Channel name : ' + channelName);
-	logger.debug('channelConfigPath : ' + channelConfigPath);
-    logger.debug('username : ' + req.username);
-    logger.debug('orgname : ' + req.orgname);
-    logger.info('<<<<<<<<<<<<<<<<<  E N D >>>>>>>>>>>>>>>>>');
+
+	logger.debug('通道名 : ' + channelName);
+	logger.debug('通道路径 : ' + channelConfigPath);
+    logger.debug('名字 : ' + req.username);
+    logger.debug('机构名 : ' + req.orgname);
     if (!channelName) {
 		res.json(getErrorMessage('\'channelName\''));
 		return;

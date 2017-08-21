@@ -8,9 +8,11 @@ var path = require('path');
 var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Create-Channel');
-//Attempt to send a request to the orderer with the sendCreateChain method
+//尝试发送一个请求与sendcreatechain方法订购方
+
 var createChannel = function(channelName, channelConfigPath, username, orgName) {
 	logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
+
 	var client = helper.getClientForOrg(orgName);
 	//var channel = helper.getChannelForOrg(orgName);
 
