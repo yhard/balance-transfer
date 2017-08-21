@@ -145,7 +145,7 @@ var getChannelForOrg = function(org) {
 var createChannelForOrg = function(channelName, org) {
 
     for (let key in ORGS) {
-        if (key.indexOf('org') === 0) {
+
             let client = new hfc();
 
             let cryptoSuite = hfc.newCryptoSuite();
@@ -163,7 +163,7 @@ var createChannelForOrg = function(channelName, org) {
             let caUrl = ORGS[key].ca;
             caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
             return channels[org];
-        }
+
     }
 
 };
