@@ -26,6 +26,28 @@ var logger = helper.getLogger('Create-Channel');
 var createChannel = function(channelName, channelConfigPath, username, orgName) {
     logger.debug('\n====== Creating Channel \'' + channelName + '\' ======\n');
 
+    for (let key in ORGS) {
+        if (key.indexOf('org') === 0) {
+            let client = new hfc();
+
+            let cryptoSuite = hfc.newCryptoSuite();
+            cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
+            client.setCryptoSuite(cryptoSuite);
+
+            let channel = client.newChannel(channelName);
+            channel.addOrderer(newOrderer(client));
+
+            clients[key] = client;
+            channels[key] = channel;
+
+            setupPeers(channel, key, client);
+
+            let caUrl = ORGS[key].ca;
+            caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+        }
+    }
+
+
     var client = this.getClientForOrg(orgName);
     var channel = this.getChannelForOrg(orgName);
 
@@ -77,26 +99,7 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 
 
 // set up the client and channel objects for each org
-for (let key in ORGS) {
-    if (key.indexOf('org') === 0) {
-        let client = new hfc();
 
-        let cryptoSuite = hfc.newCryptoSuite();
-        cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
-        client.setCryptoSuite(cryptoSuite);
-
-        let channel = client.newChannel(channelName);
-        channel.addOrderer(newOrderer(client));
-
-        clients[key] = client;
-        channels[key] = channel;
-
-        setupPeers(channel, key, client);
-
-        let caUrl = ORGS[key].ca;
-        caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
-    }
-}
 
 function setupPeers(channel, org, client) {
     for (let key in ORGS[org].peers) {
