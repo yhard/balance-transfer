@@ -143,24 +143,29 @@ var getChannelForOrg = function(org) {
 
 
 var createChannelForOrg = function(channelName, org) {
-    let client = new hfc();
 
-    let cryptoSuite = hfc.newCryptoSuite();
-    cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[org].name)}));
-    client.setCryptoSuite(cryptoSuite);
+    for (let key in ORGS) {
+        if (key.indexOf('org') === 0) {
+            let client = new hfc();
 
-    let channel = client.newChannel(channelName);
-    channel.addOrderer(newOrderer(client));
+            let cryptoSuite = hfc.newCryptoSuite();
+            cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
+            client.setCryptoSuite(cryptoSuite);
 
-    clients[org] = client;
-    channels[org] = channel;
+            let channel = client.newChannel(channelName);
+            channel.addOrderer(newOrderer(client));
 
-    setupPeers(channel, org, client);
+            clients[key] = client;
+            channels[key] = channel;
 
-    let caUrl = ORGS[org].ca;
-    caClients[org] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+            setupPeers(channel, key, client);
 
-    return channel;
+            let caUrl = ORGS[key].ca;
+            caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+            return channels[org];
+        }
+    }
+
 };
 
 var getClientForOrg = function(org) {
