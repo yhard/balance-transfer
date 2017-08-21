@@ -83,10 +83,6 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
         }
     }
 
-    var getClientForOrg = function(org) {
-        return clients[org];
-    };
-
 	var client = clients[orgName];
 	//var channel = helper.getChannelForOrg(orgName);
 
