@@ -56,6 +56,10 @@ var joinChannel = function(channelName, peers, username, org) {
 
 	var channel = helper.createChannelForOrg(channelName,org);
 
+	logger.info("---------------------------------------");
+	logger.debug(channel);
+	logger.info("---------------------------------------");
+
 	var eventhubs = [];
 
 	return helper.getOrgAdmin(org).then((admin) => {
@@ -65,6 +69,10 @@ var joinChannel = function(channelName, peers, username, org) {
 		let request = {
 			txId : 	tx_id
 		};
+
+        logger.info("****************************************");
+        logger.debug(request);
+        logger.info("****************************************");
 
 		return channel.getGenesisBlock(request);
 

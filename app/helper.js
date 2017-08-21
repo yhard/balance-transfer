@@ -162,7 +162,7 @@ var createChannelForOrg = function(channelName, org) {
 
             let caUrl = ORGS[key].ca;
             caClients[key] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
-            return channels[key];
+            return channels[org];
         }
     }
 
