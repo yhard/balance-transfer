@@ -23,6 +23,7 @@ var ORGS = hfc.getConfigSetting('network-config');
 var clients = {};
 var channels = {};
 var caClients = {};
+var channelName="mychannel";
 
 // set up the client and channel objects for each org
 for (let key in ORGS) {
@@ -155,6 +156,29 @@ var getChannelForOrg = function(org) {
     return channels[org];
 };
 
+
+//新添加 8月23日
+var createOrgForOrg = function(channelName, org) {
+    let client = new hfc();
+
+    let cryptoSuite = hfc.newCryptoSuite();
+    cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[org].name)}));
+    client.setCryptoSuite(cryptoSuite);
+
+    let channel = client.newChannel(channelName);
+    channel.addOrderer(newOrderer(client));
+
+    clients[org] = client;
+    channels[org] = channel;
+
+    setupPeers(channel, org, client);
+
+    let caUrl = ORGS[org].ca;
+    caClients[org] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
+
+    return clients;
+};
+
 //新添加 8月23日
 var createChannelForOrg = function(channelName, org) {
     let client = new hfc();
@@ -174,7 +198,7 @@ var createChannelForOrg = function(channelName, org) {
     let caUrl = ORGS[org].ca;
     caClients[org] = new copService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
 
-    return channel;
+    return clients[org];
 };
 
 
@@ -352,6 +376,9 @@ var getPeerAddressByName = function(org, peer) {
     return address.split('grpcs://')[1];
 };
 
+
+
+exports.createOrgForOrg = createOrgForOrg;
 exports.createChannelForOrg = createChannelForOrg;
 exports.getChannelForOrg = getChannelForOrg;
 exports.getClientForOrg = getClientForOrg;
